@@ -87,9 +87,7 @@ The engine extracts data from the Excel file and scores **8 financial metrics**:
 
 ## 📸 Screenshots
 
-> Upload your own screenshots here after running the app!
->
-> Suggested: Upload Screen | Dashboard (Dark) | Dashboard (Light) | Compare Mode
+![Preview](https://github.com/dyal96/Stock/blob/main/v0.1/screenshots.png)
 
 ---
 
@@ -102,3 +100,4 @@ This tool is for **educational and informational purposes only**. It does not co
 ## 📄 License
 
 MIT — free to use, modify, and distribute.
+
