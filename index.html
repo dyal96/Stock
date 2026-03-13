@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Analysis Dashboard — One Glance</title>
+  <meta name="description"
+    content="Upload a Screener.in Excel file and get instant stock analysis with charts, indicators, and a formatted report.">
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+  <!-- TOOLBAR -->
+  <nav class="toolbar" id="toolbar">
+    <div class="brand">📊 Stock Analyzer</div>
+    <div class="toolbar-actions">
+      <button class="toolbar-btn" id="backBtn" style="display:none">← Upload Another</button>
+      <button class="toolbar-btn" id="compareToggle" style="display:none">⚖️ Compare</button>
+      <button class="toolbar-btn" id="exportPdf" style="display:none">📄 Export PDF</button>
+      <button class="toolbar-btn" id="printBtn" style="display:none">🖨️ Print</button>
+      <button class="toolbar-btn theme-toggle" id="themeToggle">🌙</button>
+    </div>
+  </nav>
+
+  <!-- LOADING OVERLAY -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Analyzing financials…</p>
+  </div>
+
+  <!-- UPLOAD SCREEN -->
+  <section class="upload-screen" id="uploadScreen">
+    <h1>📊 Stock Analyzer</h1>
+    <p class="subtitle">Upload a Screener.in Excel file for instant one-glance analysis</p>
+    <div class="drop-zone" id="dropZone">
+      <span class="icon">📁</span>
+      <p>Drag &amp; drop your <strong>.xlsx</strong> file here</p>
+      <p class="hint">or click to browse • supports multi-file for compare mode</p>
+      <input type="file" class="file-input" id="fileInput" accept=".xlsx,.xls" multiple>
+    </div>
+
+    <!-- History -->
+    <div class="history-panel" id="historyPanel"></div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard" id="dashboard">
+
+    <!-- Compare Bar (hidden by default) -->
+    <div class="compare-bar hidden" id="compareBar">
+      <span class="compare-label">⚖️ Compare Mode</span>
+      <div class="compare-chips" id="compareChips"></div>
+      <input type="file" id="compareFileInput" class="file-input" accept=".xlsx,.xls">
+      <button class="compare-add-btn" id="compareAddBtn">+ Add Stock</button>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="company-header" id="companyHeader">
+        <h2 id="companyName">—</h2>
+        <div class="meta">
+          <span id="metaPrice"></span>
+          <span id="metaMcap"></span>
+          <span id="metaFV"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Score Gauge + Verdict -->
+    <div class="gauge-and-verdict">
+      <div class="score-gauge" id="scoreGauge">
+        <svg viewBox="0 0 180 105">
+          <path class="gauge-bg" d="M 15 95 A 75 75 0 0 1 165 95" />
+          <path class="gauge-fill" id="gaugeFill" d="M 15 95 A 75 75 0 0 1 165 95" />
+        </svg>
+        <div class="gauge-label">
+          <span class="gauge-score" id="gaugeScoreText">0</span>
+          <span class="gauge-max">/ 10</span>
+        </div>
+      </div>
+      <div class="verdict-info">
+        <div class="verdict-badge-large" id="verdictBadge">—</div>
+        <p id="verdictText" style="color:var(--text-secondary);font-size:0.95rem;margin-top:0.3rem;line-height:1.55">
+        </p>
+        <div class="score-breakdown" id="scoreBreakdown"></div>
+      </div>
+    </div>
+
+    <!-- Indicator Cards (with sparklines + tooltips) -->
+    <div class="indicators-grid" id="indicatorsGrid"></div>
+
+    <!-- Extra Ratios Row -->
+    <div class="ratios-grid" id="ratiosGrid"></div>
+
+    <!-- Charts (5 charts now — includes Quarterly OPM) -->
+    <div class="charts-grid">
+      <div class="chart-panel">
+        <h3>📈 Revenue &amp; Net Profit (Annual)</h3>
+        <canvas id="chartAnnual"></canvas>
+      </div>
+      <div class="chart-panel">
+        <h3>📊 Quarterly Net Profit</h3>
+        <canvas id="chartQuarterly"></canvas>
+      </div>
+      <div class="chart-panel">
+        <h3>🏦 Balance Sheet Composition</h3>
+        <canvas id="chartBalance"></canvas>
+      </div>
+      <div class="chart-panel">
+        <h3>💰 Cash Flow Breakdown</h3>
+        <canvas id="chartCashflow"></canvas>
+      </div>
+      <div class="chart-panel full-width">
+        <h3>📉 Quarterly Operating Margin Trend</h3>
+        <canvas id="chartOPM"></canvas>
+      </div>
+    </div>
+
+    <!-- Compare Table (hidden by default) -->
+    <div class="compare-table-section hidden" id="compareSection">
+      <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:1rem">⚖️ Stock Comparison</h3>
+      <table class="compare-table" id="compareTable">
+        <thead>
+          <tr id="compareHeader"></tr>
+        </thead>
+        <tbody id="compareBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Key Metrics Table -->
+    <div class="metrics-section">
+      <h3>📋 Key Metrics Comparison</h3>
+      <table class="metrics-table" id="metricsTable">
+        <thead>
+          <tr id="metricsHeader"></tr>
+        </thead>
+        <tbody id="metricsBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Analysis Report -->
+    <div class="report-section">
+      <h3>🔍 Detailed Analysis Report</h3>
+      <ul class="report-list" id="reportList"></ul>
+    </div>
+
+    <p class="disclaimer">Disclaimer: This analysis is auto-generated from uploaded data and does not constitute
+      financial advice. Consult a SEBI-registered advisor before making investment decisions.</p>
+  </main>
+
+  <!-- Libraries via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
