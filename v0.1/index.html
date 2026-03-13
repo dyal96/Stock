@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Analysis Dashboard — One Glance</title>
+  <meta name="description" content="Upload a Screener.in Excel file and get instant stock analysis with charts, indicators, and a formatted report.">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- LOADING OVERLAY -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>Analyzing financials…</p>
+  </div>
+
+  <!-- UPLOAD SCREEN -->
+  <section class="upload-screen" id="uploadScreen">
+    <h1>📊 Stock Analyzer</h1>
+    <p class="subtitle">Upload a Screener.in Excel file for instant one-glance analysis</p>
+    <div class="drop-zone" id="dropZone">
+      <span class="icon">📁</span>
+      <p>Drag &amp; drop your <strong>.xlsx</strong> file here</p>
+      <p class="hint">or click to browse</p>
+      <input type="file" class="file-input" id="fileInput" accept=".xlsx,.xls">
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard" id="dashboard">
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="company-header" id="companyHeader">
+        <h2 id="companyName">—</h2>
+        <div class="meta">
+          <span id="metaPrice"></span>
+          <span id="metaMcap"></span>
+          <span id="metaFV"></span>
+        </div>
+      </div>
+      <button class="back-btn" id="backBtn">← Upload Another</button>
+    </div>
+
+    <!-- Verdict Banner -->
+    <div class="verdict-banner" id="verdictBanner">
+      <div class="verdict-badge" id="verdictBadge">—</div>
+      <div class="verdict-text" id="verdictText"></div>
+    </div>
+
+    <!-- Indicator Cards -->
+    <div class="indicators-grid" id="indicatorsGrid"></div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-panel">
+        <h3>📈 Revenue &amp; Net Profit (Annual)</h3>
+        <canvas id="chartAnnual"></canvas>
+      </div>
+      <div class="chart-panel">
+        <h3>📊 Quarterly Net Profit</h3>
+        <canvas id="chartQuarterly"></canvas>
+      </div>
+      <div class="chart-panel">
+        <h3>🏦 Balance Sheet Composition</h3>
+        <canvas id="chartBalance"></canvas>
+      </div>
+      <div class="chart-panel">
+        <h3>💰 Cash Flow Breakdown</h3>
+        <canvas id="chartCashflow"></canvas>
+      </div>
+    </div>
+
+    <!-- Key Metrics Table -->
+    <div class="metrics-section">
+      <h3>📋 Key Metrics Comparison</h3>
+      <table class="metrics-table" id="metricsTable">
+        <thead><tr id="metricsHeader"></tr></thead>
+        <tbody id="metricsBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Analysis Report -->
+    <div class="report-section">
+      <h3>🔍 Detailed Analysis Report</h3>
+      <ul class="report-list" id="reportList"></ul>
+    </div>
+
+    <p class="disclaimer">Disclaimer: This analysis is auto-generated from uploaded data and does not constitute financial advice. Consult a SEBI-registered advisor before making investment decisions.</p>
+  </main>
+
+  <!-- Libraries via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
